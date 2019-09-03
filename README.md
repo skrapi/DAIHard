@@ -9,19 +9,19 @@ Fork this repo and create a local repo.
 
 eg.
 
-```sh
+```console
 git clone https://github.com/skrapi/DAIHard.git
 ```
 
 Add a remote to get updates from this repo
 
-```sh
+```console
 git remote add upstream https://github.com/burnable-tech/DAIHard.git
 ```
 
 Branch from dev as it will be the most up to date branch
 
-```sh
+```console
 git checkout -b feat-new_branch_name
 ```
 
