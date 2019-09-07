@@ -18,6 +18,7 @@ import Prices
 import Routing exposing (Route)
 import TokenValue exposing (TokenValue)
 import Wallet
+import Helpers.Math exposing (ceiling)
 
 
 root : Int -> Model -> ( Element Msg, List (Element Msg) )
@@ -27,7 +28,7 @@ root screenWidth model =
         , Element.width Element.fill
         ]
         [ EH.submodelContainer
-            screenWidth
+            (ceiling 1000 screenWidth)
             (Just "Trade Dai/xDai for ZEC, XMR, or BTC")
             "CRYPTO SWAP"
             (Element.column
