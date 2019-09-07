@@ -20,14 +20,14 @@ import TokenValue exposing (TokenValue)
 import Wallet
 
 
-root : Model -> ( Element Msg, List (Element Msg) )
-root model =
+root : Int -> Model -> ( Element Msg, List (Element Msg) )
+root screenWidth model =
     ( Element.column
         [ Element.spacing 30
         , Element.width Element.fill
         ]
         [ EH.submodelContainer
-            1000
+            screenWidth
             (Just "Trade Dai/xDai for ZEC, XMR, or BTC")
             "CRYPTO SWAP"
             (Element.column

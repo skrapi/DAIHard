@@ -376,7 +376,7 @@ submodelElementAndModal screenWidth model =
                             (List.map (Element.map CreateMsg))
 
                 CryptoSwapModel cryptoSwapModel ->
-                    CryptoSwap.View.root cryptoSwapModel
+                    CryptoSwap.View.root screenWidth cryptoSwapModel
                         |> Tuple.mapBoth
                             (Element.map CryptoSwapMsg)
                             (List.map (Element.map CryptoSwapMsg))
