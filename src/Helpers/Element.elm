@@ -1274,7 +1274,8 @@ submodelContainer maxWidth maybeBigTitleText smallTitleText el =
         , Element.spacing 60
         , Element.width Element.fill
         ]
-        [ Maybe.map
+        [ Element.paragraph [] 
+            [ Maybe.map
             (Element.el
                 [ Element.Font.color white
                 , Element.Font.size 38
@@ -1285,6 +1286,7 @@ submodelContainer maxWidth maybeBigTitleText smallTitleText el =
             )
             maybeBigTitleText
             |> Maybe.withDefault Element.none
+            ]
         , Element.column
             [ Element.Background.color <| submodelBackgroundColor
             , Element.spacing 20
