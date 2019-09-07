@@ -27,6 +27,7 @@ import TradeCache.State as TradeCache
 import TradeCache.Types as TradeCache exposing (TradeCache)
 import TradeTable.Types as TradeTable
 import TradeTable.View as TradeTable
+import Helpers.Math exposing(ceiling)
 
 
 root : Int -> Time.Posix -> List TradeCache -> Model -> ( Element Msg, List (Element Msg) )
