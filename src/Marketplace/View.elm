@@ -55,7 +55,7 @@ root screenWidth time tradeCaches model =
                 tradeCaches
     in
     ( EH.submodelContainer
-        screenWidth
+        (ceiling 1000 screenWidth)
         (Just "Browse Offers. Local or Worldwide, Cash or Crypto.")
         "MARKETPLACE"
         (Element.column
