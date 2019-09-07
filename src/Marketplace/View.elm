@@ -29,8 +29,8 @@ import TradeTable.Types as TradeTable
 import TradeTable.View as TradeTable
 
 
-root : Time.Posix -> List TradeCache -> Model -> ( Element Msg, List (Element Msg) )
-root time tradeCaches model =
+root : Int -> Time.Posix -> List TradeCache -> Model -> ( Element Msg, List (Element Msg) )
+root screenWidth time tradeCaches model =
     let
         onlyOpenPhaseChecked =
             let
