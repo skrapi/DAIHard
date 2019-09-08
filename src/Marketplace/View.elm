@@ -56,7 +56,7 @@ root screenWidth time tradeCaches model =
                 tradeCaches
     in
     ( EH.submodelContainer
-        (ceiling 1000 screenWidth)
+        (ceiling 1800 screenWidth)
         (Just "Browse Offers. Local or Worldwide, Cash or Crypto.")
         "MARKETPLACE"
         (Element.column
@@ -71,6 +71,7 @@ root screenWidth time tradeCaches model =
                 [ statusFiltersAndSearchElement tradeCaches model.filters model.inputs model.errors model.showCurrencyDropdown
                 ]
             , maybeResultsElement
+                screenWidth
                 time
                 onlyOpenPhaseChecked
                 tcDoneLoading
@@ -205,8 +206,8 @@ removeSearchTermButton term =
         (Element.text "x")
 
 
-maybeResultsElement : Time.Posix -> Bool -> Bool -> List TradeCache -> Model -> Element Msg
-maybeResultsElement time onlyOpenTrades tcDoneLoading tradeCaches model =
+maybeResultsElement : Int -> Time.Posix -> Bool -> Bool -> List TradeCache -> Model -> Element Msg
+maybeResultsElement screenWidth time onlyOpenTrades tcDoneLoading tradeCaches model =
     let
         visibleTrades =
             tradeCaches
@@ -235,6 +236,7 @@ maybeResultsElement time onlyOpenTrades tcDoneLoading tradeCaches model =
 
     else
         TradeTable.view
+            screenWidth
             time
             model.tradeTable
             model.prices

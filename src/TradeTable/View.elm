@@ -20,20 +20,20 @@ import TokenValue exposing (TokenValue)
 import TradeTable.Types exposing (..)
 
 
-view : Time.Posix -> Model -> List ( ForeignCrypto, PriceFetch.PriceData ) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
-view time model prices colTypes trades =
+view : Int -> Time.Posix -> Model -> List ( ForeignCrypto, PriceFetch.PriceData ) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
+view screenWidth time model prices colTypes trades =
     Element.column
         [ Element.width Element.fill
         , Element.height Element.fill
         , Element.spacing 5
         ]
-        [ viewColHeaders model.orderBy colTypes
-        , viewTradeRows time model prices colTypes trades
+        [ viewColHeaders screenWidth model.orderBy colTypes
+        , viewTradeRows screenWidth time model prices colTypes trades
         ]
 
 
-viewColHeaders : ( ColType, Ordering ) -> List ColType -> Element Msg
-viewColHeaders orderBy colTypes =
+viewColHeaders : Int -> ( ColType, Ordering ) -> List ColType -> Element Msg
+viewColHeaders screenWidth orderBy colTypes =
     Element.row [ Element.width Element.fill ]
         (colTypes
             |> List.map
@@ -136,8 +136,8 @@ colTitleEl colType =
                     "Burn Window"
 
 
-viewTradeRows : Time.Posix -> Model -> List ( ForeignCrypto, PriceFetch.PriceData ) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
-viewTradeRows time model prices colTypes trades =
+viewTradeRows : Int -> Time.Posix -> Model -> List ( ForeignCrypto, PriceFetch.PriceData ) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
+viewTradeRows screenWidth time model prices colTypes trades =
     Element.column
         [ Element.width Element.fill
         , Element.Border.width 2

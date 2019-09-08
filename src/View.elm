@@ -394,7 +394,7 @@ submodelElementAndModal screenWidth model =
                             (List.map (Element.map MarketplaceMsg))
 
                 AgentHistoryModel agentHistoryModel ->
-                    ( Element.map AgentHistoryMsg (AgentHistory.View.root model.time model.tradeCaches agentHistoryModel)
+                    ( Element.map AgentHistoryMsg (AgentHistory.View.root screenWidth model.time model.tradeCaches agentHistoryModel)
                     , []
                     )
     in

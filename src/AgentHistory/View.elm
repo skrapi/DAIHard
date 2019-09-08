@@ -28,12 +28,13 @@ import TradeCache.Types as TradeCache exposing (TradeCache)
 import TradeTable.Types as TradeTable
 import TradeTable.View as TradeTable
 import Wallet
+import Helpers.Math exposing (ceiling)
 
 
-root : Time.Posix -> List TradeCache -> Model -> Element Msg
-root time tradeCaches model =
+root : Int -> Time.Posix -> List TradeCache -> Model -> Element Msg
+root screenWidth time tradeCaches model =
     EH.submodelContainer
-        1800
+        ( ceiling 1800 screenWidth )
         Nothing
         (case Wallet.userInfo model.wallet of
             Nothing ->
@@ -57,7 +58,7 @@ root time tradeCaches model =
                         (TradeCache.loadingStatus >> (==) TradeCache.AllFetched)
                         tradeCaches
               in
-              maybeResultsElement time tcDoneLoading tradeCaches model
+              maybeResultsElement screenWidth time tcDoneLoading tradeCaches model
             ]
         )
 
@@ -114,8 +115,8 @@ statusAndFiltersElement tradeCaches model =
         )
 
 
-maybeResultsElement : Time.Posix -> Bool -> List TradeCache -> Model -> Element Msg
-maybeResultsElement time tcDoneLoading tradeCaches model =
+maybeResultsElement : Int -> Time.Posix -> Bool -> List TradeCache -> Model -> Element Msg
+maybeResultsElement screenWidth time tcDoneLoading tradeCaches model =
     let
         visibleTrades =
             tradeCaches
@@ -149,6 +150,7 @@ maybeResultsElement time tcDoneLoading tradeCaches model =
 
     else
         TradeTable.view
+            screenWidth
             time
             model.tradeTable
             model.prices
