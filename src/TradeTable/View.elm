@@ -22,15 +22,34 @@ import TradeTable.Types exposing (..)
 
 view : Int -> Time.Posix -> Model -> List ( ForeignCrypto, PriceFetch.PriceData ) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
 view screenWidth time model prices colTypes trades =
-    Element.column
+    let 
+        ( tradeHeader, tradeContent ) = 
+            if screenWidth >= 1000 then
+                ( viewColHeaders screenWidth model.orderBy colTypes
+                , viewTradeRows screenWidth time model prices colTypes trades
+                )
+            else
+                ( viewSmallHeader
+                , viewSmallTradeCell time prices (List.head trades) 
+                )
+    in
+     ( Element.column
         [ Element.width Element.fill
         , Element.height Element.fill
         , Element.spacing 5
         ]
-        [ viewColHeaders screenWidth model.orderBy colTypes
-        , viewTradeRows screenWidth time model prices colTypes trades
+        [ tradeHeader
+        , tradeContent    
         ]
+     )
 
+
+viewSmallHeader : Element Msg
+viewSmallHeader = 
+    Element.row [ Element.width Element.fill ]
+        [
+            Element.text "Swipe for more trades"
+        ]
 
 viewColHeaders : Int -> ( ColType, Ordering ) -> List ColType -> Element Msg
 viewColHeaders screenWidth orderBy colTypes =
@@ -327,12 +346,34 @@ viewTradeCell time prices colType trade =
                     trade.parameters.autoreleaseInterval
         )
 
+viewSmallTradeCell : Time.Posix -> List ( ForeignCrypto, PriceFetch.PriceData ) -> Maybe CTypes.FullTradeInfo -> Element Msg
+viewSmallTradeCell time prices trade =
+    smallCellMaker 1 (Element.text "TestCell" )
+
+
 
 cellMaker : Int -> Element Msg -> Element Msg
 cellMaker portion cellElement =
     Element.el
         [ Element.width <| Element.fillPortion portion
         , Element.height <| Element.px 60
+        , Element.clip
+        ]
+    <|
+        Element.el
+            [ Element.padding 12
+            , Element.centerY
+            , Element.width Element.fill
+            ]
+            cellElement
+
+
+
+smallCellMaker : Int -> Element Msg -> Element Msg
+smallCellMaker portion cellElement =
+    Element.el
+        [ Element.width <| Element.fillPortion portion
+        , Element.height <| Element.fill
         , Element.clip
         ]
     <|

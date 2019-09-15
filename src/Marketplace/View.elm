@@ -68,7 +68,7 @@ root screenWidth time tradeCaches model =
                 [ Element.width Element.fill
                 , Element.spacing 10
                 ]
-                [ statusFiltersAndSearchElement tradeCaches model.filters model.inputs model.errors model.showCurrencyDropdown
+                [ statusFiltersAndSearchElement screenWidth tradeCaches model.filters model.inputs model.errors model.showCurrencyDropdown
                 ]
             , maybeResultsElement
                 screenWidth
@@ -83,8 +83,8 @@ root screenWidth time tradeCaches model =
     )
 
 
-statusFiltersAndSearchElement : List TradeCache -> Filters.Model -> SearchInputs -> Errors -> Bool -> Element Msg
-statusFiltersAndSearchElement tradeCaches filters inputs errors showCurrencyDropdown =
+statusFiltersAndSearchElement : Int -> List TradeCache -> Filters.Model -> SearchInputs -> Errors -> Bool -> Element Msg
+statusFiltersAndSearchElement screenWidth tradeCaches filters inputs errors showCurrencyDropdown =
     let
         statusMsgElement s =
             Element.el
