@@ -42,7 +42,7 @@ view screenWidth time model prices colTypes trades =
 
 viewTradeForSmallScreen : Element Msg
 viewTradeForSmallScreen =
-    Element.
+    Element.none
     
 viewColHeaders : ( ColType, Ordering ) -> List ColType -> Element Msg
 viewColHeaders orderBy colTypes =
