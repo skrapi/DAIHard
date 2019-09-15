@@ -23,36 +23,25 @@ import TradeTable.Types exposing (..)
 view : Int -> Time.Posix -> Model -> List ( ForeignCrypto, PriceFetch.PriceData ) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
 view screenWidth time model prices colTypes trades =
     let 
-        ( tradeHeader, tradeContent ) = 
-            if screenWidth >= 1000 then
-                ( viewColHeaders screenWidth model.orderBy colTypes
-                , viewTradeRows screenWidth time model prices colTypes trades
+        (viewHeader, viewContent ) =
+            if screenWidth >= 600 then
+                ( viewColHeaders model.orderBy colTypes
+                , viewTradeRows time model prices colTypes trades
                 )
-            else
-                ( viewSmallHeader
-                , viewSmallTradeCell time prices (List.head trades) 
-                )
-    in
-     ( Element.column
-        [ Element.width Element.fill
-        , Element.height Element.fill
-        , Element.spacing 5
-        ]
-        [ tradeHeader
-        , tradeContent    
-        ]
-     )
+            else 
+                ( Element.none, Element.none)
+    in 
+        Element.column
+            [ Element.width Element.fill
+            , Element.height Element.fill
+            , Element.spacing 5
+            ]
+            [ 
+            ]
 
 
-viewSmallHeader : Element Msg
-viewSmallHeader = 
-    Element.row [ Element.width Element.fill ]
-        [
-            Element.text "Swipe for more trades"
-        ]
-
-viewColHeaders : Int -> ( ColType, Ordering ) -> List ColType -> Element Msg
-viewColHeaders screenWidth orderBy colTypes =
+viewColHeaders : ( ColType, Ordering ) -> List ColType -> Element Msg
+viewColHeaders orderBy colTypes =
     Element.row [ Element.width Element.fill ]
         (colTypes
             |> List.map
@@ -155,8 +144,8 @@ colTitleEl colType =
                     "Burn Window"
 
 
-viewTradeRows : Int -> Time.Posix -> Model -> List ( ForeignCrypto, PriceFetch.PriceData ) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
-viewTradeRows screenWidth time model prices colTypes trades =
+viewTradeRows : Time.Posix -> Model -> List ( ForeignCrypto, PriceFetch.PriceData ) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
+viewTradeRows time model prices colTypes trades =
     Element.column
         [ Element.width Element.fill
         , Element.Border.width 2
@@ -346,34 +335,12 @@ viewTradeCell time prices colType trade =
                     trade.parameters.autoreleaseInterval
         )
 
-viewSmallTradeCell : Time.Posix -> List ( ForeignCrypto, PriceFetch.PriceData ) -> Maybe CTypes.FullTradeInfo -> Element Msg
-viewSmallTradeCell time prices trade =
-    smallCellMaker 1 (Element.text "TestCell" )
-
-
 
 cellMaker : Int -> Element Msg -> Element Msg
 cellMaker portion cellElement =
     Element.el
         [ Element.width <| Element.fillPortion portion
         , Element.height <| Element.px 60
-        , Element.clip
-        ]
-    <|
-        Element.el
-            [ Element.padding 12
-            , Element.centerY
-            , Element.width Element.fill
-            ]
-            cellElement
-
-
-
-smallCellMaker : Int -> Element Msg -> Element Msg
-smallCellMaker portion cellElement =
-    Element.el
-        [ Element.width <| Element.fillPortion portion
-        , Element.height <| Element.fill
         , Element.clip
         ]
     <|
