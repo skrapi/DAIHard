@@ -29,7 +29,7 @@ view screenWidth time model prices colTypes trades =
                 , viewTradeRows time model prices colTypes trades
                 )
             else 
-                ( Element.none, viewTradeForSmallScreen )
+                ( Element.none, viewTradeForSmallScreen colTypes)
     in 
         Element.column
             [ Element.width Element.fill
@@ -40,9 +40,15 @@ view screenWidth time model prices colTypes trades =
             , viewContent
             ]
 
-viewTradeForSmallScreen : Element Msg
-viewTradeForSmallScreen =
-    Element.none
+viewTradeForSmallScreen : List ColType -> Element Msg
+viewTradeForSmallScreen colTypes =
+        Element.row [ Element.width Element.fill ]
+        (colTypes
+            |> List.map
+                (\colType ->
+                    colTitleEl colType
+                )
+        )
     
 viewColHeaders : ( ColType, Ordering ) -> List ColType -> Element Msg
 viewColHeaders orderBy colTypes =
