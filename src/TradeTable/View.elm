@@ -20,7 +20,7 @@ import TokenValue exposing (TokenValue)
 import TradeTable.Types exposing (..)
 
 
-view : Int -> Time.Posix -> Model -> List ( ForeignCrypto, PriceFetch.PriceData ) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
+view : Int -> Time.Posix -> Model -> List (Currencies.Symbol,PriceFetch.PriceData) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
 view screenWidth time model prices colTypes trades =
     let 
         (viewHeader, viewContent ) =
@@ -42,7 +42,7 @@ view screenWidth time model prices colTypes trades =
 
 viewTradeForSmallScreen : List ColType -> Element Msg
 viewTradeForSmallScreen colTypes =
-        Element.row [ Element.width Element.fill ]
+        Element.column [ Element.width Element.fill ]
         (colTypes
             |> List.map
                 (\colType ->

@@ -55,15 +55,8 @@ root screenWidth time tradeCaches model =
                 (TradeCache.loadingStatus >> (==) TradeCache.AllFetched)
                 tradeCaches
     in
-<<<<<<< HEAD
-    ( EH.submodelContainer
-        (ceiling 1800 screenWidth)
-        (Just "Browse Offers. Local or Worldwide, Cash or Crypto.")
-        "MARKETPLACE"
-=======
     ( EH.simpleSubmodelContainer
         1800
->>>>>>> master
         (Element.column
             [ Element.width Element.fill
             , Element.height Element.fill

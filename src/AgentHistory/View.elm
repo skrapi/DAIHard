@@ -31,8 +31,8 @@ import Wallet
 import Helpers.Math exposing (ceiling)
 
 
-root : Time.Posix -> List TradeCache -> Model -> Element Msg
-root time tradeCaches model =
+root : Int -> Time.Posix -> List TradeCache -> Model -> Element Msg
+root screenWidth time tradeCaches model =
     EH.simpleSubmodelContainer
         1800
         (Element.column
