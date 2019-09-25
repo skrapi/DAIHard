@@ -29,7 +29,7 @@ view screenWidth time model prices colTypes trades =
                 , viewTradeRows time model prices colTypes trades
                 )
             else 
-                ( Element.none, viewTradeForSmallScreen colTypes)
+                ( Element.none, viewTradeForSmallScreen time model prices colTypes trades)
     in 
         Element.column
             [ Element.width Element.fill
@@ -40,15 +40,161 @@ view screenWidth time model prices colTypes trades =
             , viewContent
             ]
 
-viewTradeForSmallScreen : List ColType -> Element Msg
-viewTradeForSmallScreen colTypes =
+viewTradeForSmallScreen : Time.Posix -> Model -> List (Currencies.Symbol,PriceFetch.PriceData) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
+viewTradeForSmallScreen time model prices colTypes trades =
         Element.column [ Element.width Element.fill ]
         (colTypes
             |> List.map
                 (\colType ->
-                    colTitleEl colType
+                    viewSmallTradeCell time prices colType (List.head trades)
                 )
+
+
         )
+
+viewSmallTradeCell : Time.Posix -> List ( Currencies.Symbol, PriceFetch.PriceData ) -> ColType -> Maybe CTypes.FullTradeInfo -> Element Msg
+viewSmallTradeCell time prices colType trade =
+    cellMaker
+        (colTypePortion colType)
+        (case colType of
+            Phase ->
+                let
+                    phaseTitle =
+                        CTypes.phaseToString trade.state.phase
+                in
+                case ( CTypes.getCurrentPhaseTimeoutInfo time trade, trade.state.phase ) of
+                    ( _, CTypes.Closed ) ->
+                        Element.text phaseTitle
+
+                    ( CTypes.TimeLeft timeoutInfo, _ ) ->
+                        let
+                            baseIntervalColor =
+                                if TimeHelpers.getRatio (Tuple.first timeoutInfo) (Tuple.second timeoutInfo) < 0.05 then
+                                    EH.softRed
+
+                                else
+                                    EH.black
+                        in
+                        Element.column
+                            [ Element.spacing 3 ]
+                            [ Element.text phaseTitle
+                            , EH.intervalWithElapsedBar
+                                [ Element.width Element.fill ]
+                                [ Element.Font.size 16 ]
+                                ( baseIntervalColor, EH.lightGray )
+                                timeoutInfo
+                            ]
+
+                    ( CTypes.TimeUp totalInterval, _ ) ->
+                        Element.row
+                            [ Element.spacing 6
+                            , Element.Font.color EH.darkGray
+                            ]
+                            [ Element.text phaseTitle
+                            , Element.el [ Element.Font.size 16 ] <| Element.text "(stale)"
+                            ]
+
+            Expires ->
+                case trade.state.phase of
+                    CTypes.Open ->
+                        case CTypes.getCurrentPhaseTimeoutInfo time trade of
+                            CTypes.TimeLeft timeoutInfo ->
+                                let
+                                    baseIntervalColor =
+                                        if TimeHelpers.getRatio (Tuple.first timeoutInfo) (Tuple.second timeoutInfo) < 0.05 then
+                                            EH.softRed
+
+                                        else
+                                            EH.black
+                                in
+                                EH.intervalWithElapsedBar
+                                    [ Element.width Element.fill ]
+                                    [ Element.Font.size 16 ]
+                                    ( baseIntervalColor, EH.lightGray )
+                                    timeoutInfo
+
+                            CTypes.TimeUp totalInterval ->
+                                EH.intervalWithElapsedBar
+                                    [ Element.width Element.fill ]
+                                    [ Element.Font.size 16 ]
+                                    ( EH.softRed, EH.lightGray )
+                                    ( Time.millisToPosix 0, totalInterval )
+
+                    _ ->
+                        Element.none
+
+            Offer ->
+                Element.row
+                    [ Element.spacing 5 ]
+                    [ Element.text <|
+                        ((case trade.parameters.initiatorRole of
+                            Buyer ->
+                                "Buying "
+
+                            Seller ->
+                                "Selling "
+                         )
+                            ++ TokenValue.toConciseString trade.parameters.tradeAmount
+                            ++ " "
+                            ++ tokenUnitName trade.factory
+                        )
+                    ]
+
+            Price ->
+                EH.price trade.terms.price
+
+            ResponderProfit ->
+                ResponderProfit.calculate prices trade
+                    |> Maybe.map (EH.coloredResponderProfit True)
+                    |> Maybe.withDefault Element.none
+
+            PaymentWindow ->
+                let
+                    lowValColor =
+                        case trade.parameters.initiatorRole of
+                            Seller ->
+                                EH.softRed
+
+                            Buyer ->
+                                EH.green
+
+                    baseColor =
+                        if Time.posixToMillis trade.parameters.autoabortInterval < (1000 * 60 * 60 * 6) then
+                            lowValColor
+
+                        else
+                            EH.black
+                in
+                EH.interval
+                    []
+                    []
+                    ( baseColor, EH.lightGray )
+                    trade.parameters.autoabortInterval
+
+            BurnWindow ->
+                let
+                    lowValColor =
+                        case trade.parameters.initiatorRole of
+                            Seller ->
+                                EH.green
+
+                            Buyer ->
+                                EH.softRed
+
+                    baseColor =
+                        if Time.posixToMillis trade.parameters.autoabortInterval < (1000 * 60 * 60 * 6) then
+                            lowValColor
+
+                        else
+                            EH.black
+                in
+                EH.interval
+                    []
+                    []
+                    ( baseColor, EH.lightGray )
+                    trade.parameters.autoreleaseInterval
+        )
+
     
 viewColHeaders : ( ColType, Ordering ) -> List ColType -> Element Msg
 viewColHeaders orderBy colTypes =
