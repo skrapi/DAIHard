@@ -43,16 +43,23 @@ view screenWidth time model prices colTypes trades =
 viewTradeForSmallScreen : Time.Posix -> Model -> List (Currencies.Symbol,PriceFetch.PriceData) -> List ColType -> List CTypes.FullTradeInfo -> Element Msg
 viewTradeForSmallScreen time model prices colTypes trades =
         Element.column [ Element.width Element.fill ]
-        (colTypes
+        ( trades
             |> List.map
-                (\colType ->
-                    viewSmallTradeCell time prices colType (List.head trades)
+                (\trade ->
+                    Element.column [ Element.width Element.fill
+                                   , Element.Border.width 2
+                                   , Element.Border.rounded 8
+                                   , Element.Border.color EH.darkGray]
+                        (colTypes
+                            |> List.map
+                                (\colType ->
+                                    viewSmallTradeCell time prices colType trade
+                                )
+                        )
                 )
-
-
         )
 
-viewSmallTradeCell : Time.Posix -> List ( Currencies.Symbol, PriceFetch.PriceData ) -> ColType -> Maybe CTypes.FullTradeInfo -> Element Msg
+viewSmallTradeCell : Time.Posix -> List ( Currencies.Symbol, PriceFetch.PriceData ) -> ColType -> CTypes.FullTradeInfo -> Element Msg
 viewSmallTradeCell time prices colType trade =
     cellMaker
         (colTypePortion colType)
@@ -90,7 +97,8 @@ viewSmallTradeCell time prices colType trade =
                             [ Element.spacing 6
                             , Element.Font.color EH.darkGray
                             ]
-                            [ Element.text phaseTitle
+                            [ Element.text "Phase"
+                            , Element.text phaseTitle
                             , Element.el [ Element.Font.size 16 ] <| Element.text "(stale)"
                             ]
 
@@ -121,7 +129,7 @@ viewSmallTradeCell time prices colType trade =
                                     ( Time.millisToPosix 0, totalInterval )
 
                     _ ->
-                        Element.none
+                        Element.text "Expired"
 
             Offer ->
                 Element.row
