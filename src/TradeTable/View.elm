@@ -97,8 +97,7 @@ viewSmallTradeCell time prices colType trade =
                             [ Element.spacing 6
                             , Element.Font.color EH.darkGray
                             ]
-                            [ Element.text "Phase"
-                            , Element.text phaseTitle
+                            [ Element.text <| "Phase: " ++ phaseTitle
                             , Element.el [ Element.Font.size 16 ] <| Element.text "(stale)"
                             ]
 
