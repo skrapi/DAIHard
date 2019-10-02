@@ -14,6 +14,7 @@ activeFactories : List FactoryType
 activeFactories =
     [ Token EthDai
     , Native XDai
+    , Token KovanDai
     ]
 
 
